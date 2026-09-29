@@ -292,8 +292,11 @@ const TEACHER_EMAIL = "executiveclass.ca@gmail.com";
    number: audio/Script-01.mp3 ... audio/Script-76.mp3. Each script in BOOK has
    "t": the start and end time of every sentence, so students can replay one
    sentence at a time and follow the highlighted text in sync.
-   If a recording is missing, the lab falls back to the device's voices.      */
-const AUDIO_BASE = "https://senseicoach.github.io/interview-lab/audio/audio/";
+   If a recording is missing, the lab falls back to the device's voices.
+   The page looks in "audio/" first and then "audio/audio/" (the GitHub Pages
+   layout), so this same file works on GitHub Pages and on Hostinger.        */
+const AUDIO_BASES = ["audio/", "audio/audio/"];
+let AUDIO_BASE = AUDIO_BASES[0];
 const AUDIO_EXT = ".mp3";
 /* =========================================================================== */
 
@@ -307,7 +310,14 @@ const byNum = n => ALL.find(s => s.num === n);
 const minutes = w => { const m = w / 140; return m < 1.25 ? "about 1 minute" : `about ${Math.round(m * 2) / 2} minutes`.replace(".5", "½"); };
 const fullText = s => s.lines.map(l => l[1]).join(" ");
 function sentencesOf(text) { return text.replace(/\s+/g, " ").match(/[^.!?]+[.!?]+["”’')]*(\s|$)|[^.!?]+$/g)?.map(x => x.trim()).filter(Boolean) || [text]; }
-function segsOf(s) { const out = []; s.lines.forEach((l, ti) => sentencesOf(l[1]).forEach(t => out.push({ sp: l[0], t, turn: ti }))); return out; }
+/* Speaker names. A line is [voice, text] or [voice, text, name]. The voice code
+   (P = interviewer voice, S = candidate voice) chooses the recording voice;
+   the optional name is what students see, so a panel interview can have
+   ["P", "...", "Sarah"] and ["P", "...", "David"]. Without a name, P lines
+   show "Interviewer" and S lines show the candidate's name.                  */
+const nameOf = (s, l) => l[2] || (l[0] === "S" ? (s.cand || WHO.S) : WHO[l[0]]);
+function segsOf(s) { const out = []; s.lines.forEach((l, ti) => sentencesOf(l[1]).forEach(t => out.push({ sp: l[0], t, turn: ti, name: nameOf(s, l) }))); return out; }
+const roleName = () => { const s = byNum(ST.num), l = s && s.lines.find(x => x[0] === "S"); return l ? nameOf(s, l) : WHO.S; };
 
 /* local progress (this browser only) */
 const store = {
@@ -320,15 +330,23 @@ const markDone = n => { DONE.add(n); store.set("done", [...DONE]); renderProgres
 /* recordings */
 const audioUrl = n => `${AUDIO_BASE}Script-${String(n).padStart(2, "0")}${AUDIO_EXT}`;
 const audioCache = {};
-function checkAudio(n) {
-  if (n in audioCache) return Promise.resolve(audioCache[n]);
+function probeAudio(url) {
   return new Promise(res => {
-    const a = new Audio(), done = ok => { audioCache[n] = ok; res(ok); };
+    const a = new Audio(); let settled = false; const done = ok => { if (!settled) { settled = true; res(ok); } };
     a.addEventListener("loadedmetadata", () => done(true), { once: true });
     a.addEventListener("error", () => done(false), { once: true });
-    a.preload = "metadata"; a.src = audioUrl(n);
-    setTimeout(() => { if (!(n in audioCache)) done(false); }, 4000);
+    a.preload = "metadata"; a.src = url;
+    setTimeout(() => done(false), 4000);
   });
+}
+async function checkAudio(n) {
+  if (n in audioCache) return audioCache[n];
+  const file = `Script-${String(n).padStart(2, "0")}${AUDIO_EXT}`;
+  const order = [AUDIO_BASE, ...AUDIO_BASES.filter(b => b !== AUDIO_BASE)];
+  for (const base of order) {
+    if (await probeAudio(base + file)) { AUDIO_BASE = base; audioCache[n] = true; return true; }
+  }
+  audioCache[n] = false; return false;
 }
 
 /* ---------- navigation ---------- */
@@ -460,8 +478,8 @@ function saveFields() { const g = $("#gist"), a = $("#answer"), nm = $("#sname")
 function dialogueHTML(s, showText) {
   let k = 0;
   if (!showText) return `<div class="masked">The script is hidden in this round so you listen, not read.
-      <div class="turns">${s.lines.map((l, ti) => `<span class="${l[0]}" data-turn="${ti}">${WHO[l[0]]}</span>`).join("")}</div></div>`;
-  return `<div class="dlg">${s.lines.map((l, ti) => `<div class="turn ${l[0]}"><div class="who">${WHO[l[0]]}</div><div class="say">${sentencesOf(l[1]).map(t => `<span class="seg" data-seg="${k++}">${esc(t)}</span>`).join(" ")}</div></div>`).join("")}</div>`;
+      <div class="turns">${s.lines.map((l, ti) => `<span class="${l[0]}" data-turn="${ti}">${esc(nameOf(s, l))}</span>`).join("")}</div></div>`;
+  return `<div class="dlg">${s.lines.map((l, ti) => `<div class="turn ${l[0]}"><div class="who">${esc(nameOf(s, l))}</div><div class="say">${sentencesOf(l[1]).map(t => `<span class="seg" data-seg="${k++}">${esc(t)}</span>`).join(" ")}</div></div>`).join("")}</div>`;
 }
 
 function playerHTML(opts) {
@@ -474,9 +492,9 @@ function playerHTML(opts) {
         <span class="nowline" id="nowline" aria-live="polite">Ready. ${ST.segs.length} sentences.</span>
       </div>
       ${lines ? `<div class="deck-row"><button class="btn secondary" id="sprev">Previous sentence</button><button class="btn" id="splay"></button><button class="btn secondary" id="snext">Next sentence</button></div>` : ""}
-      ${echo ? `<div class="deck-row"><label>Pause after each sentence <select id="gap"><option value="1">Short</option><option value="1.4">Medium</option><option value="2">Long</option></select></label>${dlg ? `<label class="check"><input type="checkbox" id="roleplay" ${ST.roleplay ? "checked" : ""}> I'll say the candidate's lines</label>` : ""}</div>` : ""}
+      ${echo ? `<div class="deck-row"><label>Pause after each sentence <select id="gap"><option value="1">Short</option><option value="1.4">Medium</option><option value="2">Long</option></select></label>${dlg ? `<label class="check"><input type="checkbox" id="roleplay" ${ST.roleplay ? "checked" : ""}> I'll say ${esc(roleName())}'s lines</label>` : ""}</div>` : ""}
       <div class="deck-row">
-        ${rec ? `<span class="nowline">Recorded voices: one for the interviewer, one for the candidate.</span>` : `<label>Interviewer <select id="pv"></select></label><label>Candidate <select id="sv"></select></label>`}
+        ${rec ? `<button class="btn secondary" id="back10">Back 10 seconds</button><span class="nowline">Recorded voices: one for the interviewer, one for the candidate.</span>` : `<label>Interviewer <select id="pv"></select></label><label>Candidate <select id="sv"></select></label>`}
         <label class="sp">Speed <select id="${rec ? "arate" : "rate"}">${rec ? `<option value="0.75">Slow</option><option value="0.9">A little slow</option><option value="1">Natural</option>` : `<option value="0.65">Very slow</option><option value="0.8">Slow</option><option value="0.9">A little slow</option><option value="1">Natural</option>`}</select></label>
       </div>
       <div class="track"><i id="trk"></i></div>
@@ -565,7 +583,7 @@ function highlight(k) {
 }
 function status(k, extra) {
   const g = ST.segs[k], nl = $("#nowline"), trk = $("#trk");
-  if (nl && g) nl.innerHTML = `<b>${WHO[g.sp]}</b> · sentence ${k + 1} of ${ST.segs.length}${extra ? ` · ${extra}` : ""}`;
+  if (nl && g) nl.innerHTML = `<b>${esc(g.name)}</b> · sentence ${k + 1} of ${ST.segs.length}${extra ? ` · ${extra}` : ""}`;
   if (trk) trk.style.width = `${((k + 1) / ST.segs.length) * 100}%`;
 }
 async function playFrom(start, { echo = false, only = false } = {}) {
@@ -576,7 +594,7 @@ async function playFrom(start, { echo = false, only = false } = {}) {
   for (let k = start; k < ST.segs.length; k++) {
     if (id !== RUN) return;
     const g = ST.segs[k]; ST.seg = k; highlight(k); status(k); updSeg();
-    const mine = echo && ST.roleplay && g.sp === "S";
+    const mine = echo && ST.roleplay && g.name === roleName();
     const T = ST.hasAudio && ALL.find(x => x.num === ST.num).t, flow = ST.hasAudio && !echo && !only;
     if (mine) { status(k, "your line, say it now"); await wait(T ? (T[k][1] - T[k][0]) * 1000 / +PREF.arate + 1200 : g.t.split(" ").length * 470 / +PREF.rate + 900); }
     else if (ST.hasAudio) await playSeg(k, flow);
@@ -602,6 +620,7 @@ function wirePlayer(s, opts = {}) {
     if (!REC || REC.dataset.n != ST.num) { REC = new Audio(audioUrl(ST.num)); REC.preload = "auto"; REC.dataset.n = ST.num; }
     $("#arate").value = ["0.75", "0.9", "1"].includes(PREF.arate) ? PREF.arate : "1";
     $("#arate").onchange = e => { PREF.arate = e.target.value; savePref(); REC.playbackRate = +e.target.value; };
+    $("#back10").onclick = () => { const T = byNum(ST.num).t; const at = Math.max(0, (REC.currentTime || 0) - 10); let k = 0; T.forEach((g, i) => { if (g[0] <= at) k = i; }); ST.seg = k; playFrom(k); };
   } else {
   fillVoices();
   $("#rate").value = PREF.rate;
@@ -651,7 +670,7 @@ function renderPanel(s) {
     ${playerHTML({ resume: false })}${dialogueHTML(s, true)}
     <div class="coach"><h4>Why this answer works</h4><p>${esc(s.coach)}</p></div>${nextRow(k)}`;
   if (k === 5) P.innerHTML = `<h3>Round 6: Echo, then answer it yourself</h3>
-    <p class="hint">After each sentence there's a pause. Say the sentence out loud, copying the rhythm and the stress. When you're ready, tick the box and take the candidate's part: the candidate's voice goes quiet and you say the lines yourself.</p>
+    <p class="hint">After each sentence there's a pause. Say the sentence out loud, copying the rhythm and the stress. When you're ready, tick the box and take ${esc(roleName())}'s part: that voice goes quiet and you say the lines yourself.</p>
     ${playerHTML({ echo: true })}${dialogueHTML(s, true)}
     <div class="mine"><h4>${ask ? "Your version" : "Your own answer"}</h4>
       <ul class="prompts">${(ask
