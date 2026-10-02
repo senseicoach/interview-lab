@@ -563,11 +563,12 @@ function utter(text, sp) {
 }
 const wait = ms => new Promise(r => setTimeout(r, ms));
 let REC = null;
-function playSeg(k, flow) {
+function playSeg(k, flow, lead) {
   const T = ALL.find(x => x.num === ST.num).t, a = REC; if (!a || !T) return Promise.resolve();
   const end = flow && k + 1 < T.length ? T[k + 1][0] : T[k][1] + 0.05, id = RUN;
+  const from = lead ? 0 : T[k][0];
   a.playbackRate = +PREF.arate;
-  if (a.paused || Math.abs(a.currentTime - T[k][0]) > 0.4) a.currentTime = T[k][0];
+  if (a.paused || Math.abs(a.currentTime - from) > 0.4) a.currentTime = from;
   return new Promise(res => {
     const tick = () => { if (id !== RUN || a.ended) { res(); return; } if (a.currentTime >= end) { if (!flow) a.pause(); res(); return; } requestAnimationFrame(tick); };
     a.play().then(() => requestAnimationFrame(tick)).catch(() => res());
@@ -597,7 +598,7 @@ async function playFrom(start, { echo = false, only = false } = {}) {
     const mine = echo && ST.roleplay && g.name === roleName();
     const T = ST.hasAudio && ALL.find(x => x.num === ST.num).t, flow = ST.hasAudio && !echo && !only;
     if (mine) { status(k, "your line, say it now"); await wait(T ? (T[k][1] - T[k][0]) * 1000 / +PREF.arate + 1200 : g.t.split(" ").length * 470 / +PREF.rate + 900); }
-    else if (ST.hasAudio) await playSeg(k, flow);
+    else if (ST.hasAudio) await playSeg(k, flow, k === 0 && !only);
     else await utter(g.t, g.sp);
     if (id !== RUN) return;
     if (echo && !mine) { status(k, "your turn, repeat it"); await wait(T ? (T[k][1] - T[k][0]) * 1000 * +PREF.gap / +PREF.arate + 700 : g.t.split(" ").length * 380 * +PREF.gap / +PREF.rate + 700); }
