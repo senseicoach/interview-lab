@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Interview Lab | Executive Class</title>
+<meta name="description" content="Respostas reais de entrevistas de emprego, da primeira à última pergunta. Gratuito, no seu ritmo.">
+<link rel="canonical" href="https://executiveclass.ca/interview-lab/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Executive Class">
 <meta property="og:locale" content="pt_BR">
@@ -307,7 +309,6 @@ const PART_DESC = {
   7: "Why should we hire you, what you want, and what makes you stay.",
   8: "The questions strong candidates ask at the end of the interview."
 };
-const TEACHER_EMAIL = "executiveclass.ca@gmail.com";
 /* ===== RECORDINGS ===========================================================
    MP3 files live in the "audio" folder beside this page, named by script
    number: audio/Script-01.mp3 ... audio/Script-76.mp3. Each script in BOOK has
@@ -407,7 +408,7 @@ function renderHome() {
   $("#view").innerHTML = `<section>
     <div class="hero">
       <h2>Hear what a strong Canadian interview answer sounds like</h2>
-      <p>Seventy-six real interview questions, each followed by a model answer from a Brazilian professional working in Canada. Listen to how strong candidates tell a story, say “I” instead of “we,” and always finish with a result.</p>
+      <p>Seventy-six common interview questions, each followed by a model answer written for a Brazilian professional working in Canada. Listen to how strong candidates tell a story, say “I” instead of “we,” and always finish with a result.</p>
       <p>Every script is recorded, with one voice for the interviewer and one for the candidate. Transcribe it, compare, study why the answer works, and then practise your own.</p>
       <div class="exchange dlg" data-part="3">
         <div class="turn P"><div class="who">Interviewer</div><div class="say">Tell me about a time you had to deliver something on an impossible deadline.</div></div>
@@ -764,16 +765,15 @@ function showResult(s) {
     ${acad.length ? `<p class="smalls"><b>Longer words to review:</b> ${acad.map(esc).join(", ")}</p>` : ""}
     <div class="sendbox">
       <div class="field"><label for="sname">Your name</label><input id="sname" value="${esc(ST.name || "")}" autocomplete="name"></div>
-      <div class="actions"><button class="btn" id="send">Email my results to Ron</button><button class="btn secondary" id="copy">Copy my results</button></div>
-      <p>This opens your email app with your results already written. Nothing is sent until you press send. If your email app doesn't open, copy your results and paste them into an email to ${TEACHER_EMAIL}.</p>
+      <div class="actions"><button class="btn" id="copy">Copy my results</button></div>
+      <p>Copy your results to keep them, or to share with your teacher.</p>
       <p class="status" id="status" role="status"></p>
     </div></div>`;
   $("#sname").oninput = e => { ST.name = e.target.value; store.set("name", ST.name); };
-  $("#send").onclick = () => { location.href = `mailto:${TEACHER_EMAIL}?subject=${encodeURIComponent(`Interview Lab: Question ${s.num}, ${s.title}`)}&body=${encodeURIComponent(resultText(s))}`; };
   $("#copy").onclick = async () => {
     const t = resultText(s);
     try { await navigator.clipboard.writeText(t); } catch { const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }
-    $("#status").textContent = "Copied. Paste it into an email or a message to Ron.";
+    $("#status").textContent = "Copied. Paste it into a message to your teacher.";
   };
 }
 function resultText(s) {
