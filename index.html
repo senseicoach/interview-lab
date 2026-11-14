@@ -25,7 +25,7 @@
 :root{
   --navy:#15292a; --navy-2:#1e393a; --navy-3:#2b4c4d; --chalk:#e3ecea; --dim:#97b0ad;
   --paper:#f4f5f3; --white:#fff; --ink:#1b2524; --muted:#56635f; --rule:#d8dedb;
-  --gold:#d3874a; --gold-soft:#f8e7d7;
+  --gold:#d3874a; --gold-ink:#9c5a1e; --gold-soft:#f8e7d7;
   --missed:#f7dca4; --missed-ink:#6a4300; --extra:#b3261e;
   --p1:#1f5f5b; --p2:#7a3b2e; --p3:#2f4f86; --p4:#8a3b5a; --p5:#5f5a1c;
   --p6:#3d6b3a; --p7:#9a5a12; --p8:#4b3f8f; --p9:#384a62;
@@ -107,7 +107,7 @@ main{min-width:0;grid-column:2}
 .toc button{display:grid;grid-template-columns:32px 1fr auto;width:100%;text-align:left;background:none;border:0;padding:4px 0;cursor:pointer;font-size:15px;color:var(--ink);gap:4px}
 .toc button span:first-child{color:var(--part);font-variant-numeric:tabular-nums;font-weight:600}
 .toc button:hover{color:var(--part)}
-.toc .ck{color:var(--gold);font-size:13px}
+.toc .ck{color:var(--gold-ink);font-size:13px}
 .notice{background:var(--white);border:1px solid var(--rule);border-left:4px solid var(--gold);padding:18px 20px;margin:22px 0;border-radius:0 8px 8px 0}
 .notice h3{font-size:16px;margin-bottom:6px}
 .notice p{font-size:15px;color:var(--muted)}
@@ -117,7 +117,7 @@ main{min-width:0;grid-column:2}
 /* script page */
 .plate{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:start;margin-bottom:24px}
 .num{width:92px;height:92px;border-radius:12px;background:var(--part);color:var(--white);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:inset 0 -6px 0 rgba(0,0,0,.18)}
-.num small{font-size:11.5px;font-weight:600;opacity:.8}
+.num small{font-size:11.5px;font-weight:600}
 .num b{font-family:var(--serif);font-size:40px;line-height:1;font-weight:600}
 .partname{font-size:14px;font-weight:600;color:var(--part)}
 .script h2{font-family:var(--serif);font-size:38px;font-weight:600;line-height:1.1;margin:4px 0 10px;color:var(--ink)}
@@ -198,7 +198,7 @@ mark{background:var(--missed);color:var(--missed-ink);border-radius:3px;padding:
 mark.small{outline:2px solid #c98a1a;outline-offset:-1px}
 del{color:var(--extra);text-decoration:line-through}
 .smalls{margin-top:14px;font-size:15px}
-.rest{color:#9aa1a8}
+.rest{color:#697077}
 .sendbox{margin-top:18px;padding-top:16px;border-top:1px solid var(--rule)}
 .sendbox p{font-size:14px;color:var(--muted);margin-top:8px}
 .status{font-size:14px;color:var(--part);margin-top:8px;min-height:1.2em}
@@ -248,7 +248,7 @@ del{color:var(--extra);text-decoration:line-through}
 .star{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--rule);border-radius:10px;background:var(--white);overflow:hidden;margin:16px 0 10px}
 .star li{padding:16px 16px 14px;border-right:1px solid var(--rule)}
 .star li:last-child{border-right:0}
-.star b{display:block;font-family:var(--serif);font-size:30px;line-height:1;color:var(--gold)}
+.star b{display:block;font-family:var(--serif);font-size:30px;line-height:1;color:var(--gold-ink)}
 .star strong{display:block;font-family:var(--serif);font-size:19px;color:var(--navy);margin-top:6px}
 .star em{display:block;font-style:normal;font-size:12.5px;font-weight:700;color:var(--muted);margin-top:2px}
 .star span{display:block;font-size:14px;color:var(--muted);margin-top:6px;line-height:1.4}
@@ -266,7 +266,7 @@ del{color:var(--extra);text-decoration:line-through}
 .mine h4{font-family:var(--serif);font-size:21px;font-weight:600;color:var(--part);margin-bottom:4px}
 @media (max-width:900px){.star{grid-template-columns:1fr 1fr}.star li:nth-child(2){border-right:0}.star li:nth-child(-n+2){border-bottom:1px solid var(--rule)}}
 .cats{margin-top:20px;padding-top:14px;border-top:1px solid rgba(127,127,127,.35)}.cats h4{margin:0 0 6px;font-size:17px}.cats ol{margin:8px 0 0;padding-left:26px}.cats li{margin:4px 0;line-height:1.5}
-#yourturn{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:60;background:#F2C14E;color:#2a2100;padding:12px 22px 14px;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.28);font-size:18px;min-width:min(320px,90vw);text-align:center}#yourturn .yt-bar{display:block;height:5px;background:rgba(0,0,0,.15);border-radius:3px;margin-top:9px;overflow:hidden}#yourturn .yt-bar i{display:block;height:100%;width:100%;background:#2a2100;animation:ytshrink linear forwards}@keyframes ytshrink{from{width:100%}to{width:0}}.rp-note{font-weight:400;opacity:.75}
+#yourturn{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:60;background:#F2C14E;color:#2a2100;padding:12px 22px 14px;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.28);font-size:18px;min-width:min(320px,90vw);text-align:center}#yourturn .yt-bar{display:block;height:5px;background:rgba(0,0,0,.15);border-radius:3px;margin-top:9px;overflow:hidden}#yourturn .yt-bar i{display:block;height:100%;width:100%;background:#2a2100;animation:ytshrink linear forwards}@keyframes ytshrink{from{width:100%}to{width:0}}.rp-note{font-weight:400}
 .respond{margin-top:22px}
 .respond h4{font-family:var(--serif);font-size:19px;font-weight:600;color:var(--navy);margin-bottom:4px}
 .rsp{border:1px solid var(--rule);border-radius:10px;padding:14px 16px;margin-top:12px;background:var(--white)}
@@ -358,7 +358,7 @@ function probeAudio(url) {
     a.addEventListener("loadedmetadata", () => done(true), { once: true });
     a.addEventListener("error", () => done(false), { once: true });
     a.preload = "metadata"; a.src = url;
-    setTimeout(() => done(false), 4000);
+    setTimeout(() => done(false), 15000);
   });
 }
 async function checkAudio(n) {
@@ -410,7 +410,7 @@ function renderHome() {
       <h2>Hear what a strong Canadian interview answer sounds like</h2>
       <p>Seventy-six common interview questions, each followed by a model answer written for a Brazilian professional working in Canada. Listen to how strong candidates tell a story, say “I” instead of “we,” and always finish with a result.</p>
       <p>Every script is recorded, with one voice for the interviewer and one for the candidate. Transcribe it, compare, study why the answer works, and then practise your own.</p>
-      <div class="exchange dlg" data-part="3">
+      <div class="exchange dlg" translate="no" data-part="3">
         <div class="turn P"><div class="who">Interviewer</div><div class="say">Tell me about a time you had to deliver something on an impossible deadline.</div></div>
         <div class="turn S"><div class="who">Candidate</div><div class="say">I was the shift coordinator, so it was my job to figure out how. First, I looked at where we were losing time…</div></div>
       </div>
@@ -469,7 +469,7 @@ function renderScript(n) {
   const i = ALL.findIndex(s => s.num === n);
   if (i < 0) return renderHome();
   const s = ALL[i];
-  if (!ST || ST.num !== n) ST = { num: n, round: 0, gist: "", answer: "", name: store.get("name", ""), seg: 0, segs: segsOf(s), result: null, done: new Set(), hasAudio: false, roleplay: false, reveal: false };
+  if (!ST || ST.num !== n) ST = { num: n, round: 0, gist: store.get("gist:" + n, ""), answer: store.get("ans:" + n, ""), name: store.get("name", ""), seg: 0, segs: segsOf(s), result: null, done: new Set(), hasAudio: audioCache[n] !== false, roleplay: false, reveal: false };
   document.body.dataset.part = s.part;
   const prev = ALL[i - 1], next = ALL[i + 1];
   const turns = s.lines.length;
@@ -492,16 +492,19 @@ function renderScript(n) {
   </article>`;
   document.querySelectorAll("[data-round]").forEach(b => b.onclick = () => goRound(+b.dataset.round));
   renderPanel(s);
-  checkAudio(s.num).then(ok => { if (ok && !ST.hasAudio && ST.num === s.num) { ST.hasAudio = true; renderPanel(s); } });
+  /* The player starts with the recording. Only if it truly fails to load (after 15 seconds) does the lab switch to the device voices. */
+  checkAudio(s.num).then(ok => { if (!ST || ST.num !== s.num || ok === ST.hasAudio) return; saveFields(); stopAll(); ST.hasAudio = ok; renderPanel(s); });
 }
 function goRound(k) { saveFields(); stopAll(); ST.done.add(ST.round); ST.round = k; renderScript(ST.num); const r = document.querySelector(".rounds"); window.scrollTo({ top: r.getBoundingClientRect().top + scrollY - 70 }); }
-function saveFields() { const g = $("#gist"), a = $("#answer"), nm = $("#sname"); if (g) ST.gist = g.value; if (a) ST.answer = a.value; if (nm) { ST.name = nm.value; store.set("name", nm.value); } }
+function saveFields() { const g = $("#gist"), a = $("#answer"), nm = $("#sname"); if (g) { ST.gist = g.value; store.set("gist:" + ST.num, g.value); } if (a) { ST.answer = a.value; store.set("ans:" + ST.num, a.value); } if (nm) { ST.name = nm.value; store.set("name", nm.value); } }
+/* keep the transcription and the round 1 answers as the student types, so a refresh loses nothing */
+document.addEventListener("input", e => { if (ST && e.target && (e.target.id === "answer" || e.target.id === "gist")) saveFields(); });
 
 function dialogueHTML(s, showText) {
   let k = 0;
   if (!showText) return `<div class="masked">The script is hidden in this round so you listen, not read.
       <div class="turns">${s.lines.map((l, ti) => `<span class="${l[0]}" data-turn="${ti}">${esc(nameOf(s, l))}</span>`).join("")}</div></div>`;
-  return `<div class="dlg">${s.lines.map((l, ti) => `<div class="turn ${l[0]}"><div class="who">${esc(nameOf(s, l))}</div><div class="say">${sentencesOf(l[1]).map(t => `<span class="seg" data-seg="${k++}">${esc(t)}</span>`).join(" ")}</div></div>`).join("")}</div>`;
+  return `<div class="dlg" translate="no">${s.lines.map((l, ti) => `<div class="turn ${l[0]}"><div class="who">${esc(nameOf(s, l))}</div><div class="say">${sentencesOf(l[1]).map(t => `<span class="seg" data-seg="${k++}">${esc(t)}</span>`).join(" ")}</div></div>`).join("")}</div>`;
 }
 
 function playerHTML(opts) {
@@ -521,7 +524,7 @@ function playerHTML(opts) {
       </div>
       <div class="track"><i id="trk"></i></div>
     </div>
-    ${rec ? "" : `<p class="voice-note">The recording didn't load, so these are your device's voices. Voices marked ★ sound the most natural.</p>`}`;
+    ${rec ? "" : `<p class="voice-note">The recording didn't load, so these are your device's voices. Voices marked ★ sound the most natural. <button class="linkbtn" id="retryAudio" type="button">Try the recording again</button></p>`}`;
 }
 
 /* ---------- speech engine ---------- */
@@ -653,6 +656,7 @@ function wirePlayer(s, opts = {}) {
     $("#back10").onclick = () => { const T = byNum(ST.num).t; const at = Math.max(0, (REC.currentTime || 0) - 10); let k = 0; T.forEach((g, i) => { if (g[0] <= at) k = i; }); ST.seg = k; playFrom(k); };
   } else {
   fillVoices();
+  if ($("#retryAudio")) $("#retryAudio").onclick = () => { saveFields(); delete audioCache[ST.num]; REC = null; ST.hasAudio = true; renderScript(ST.num); };
   $("#rate").value = PREF.rate;
   $("#rate").onchange = e => { PREF.rate = e.target.value; savePref(); };
   $("#pv").onchange = e => { PREF.pv = e.target.value; savePref(); };
@@ -677,7 +681,7 @@ function nextRow(k) {
 
 function renderPanel(s) {
   const k = ST.round, P = $("#panel"), dlg = true, ask = s.kind === "ask";
-  const answerBox = `<div class="field"><label for="answer">Your transcription</label><textarea id="answer" placeholder="Write exactly what you hear. You don't need to write “Interviewer” or “Candidate.”">${esc(ST.answer)}</textarea></div>`;
+  const answerBox = `<div class="field"><label for="answer">Your transcription (saved in this browser)</label><textarea id="answer" spellcheck="false" autocorrect="off" autocomplete="off" translate="no" placeholder="Write exactly what you hear. You don't need to write “Interviewer” or “Candidate.”">${esc(ST.answer)}</textarea></div>`;
   const gistQs = ask
     ? ["What question does the candidate ask?", "What does the interviewer reveal about the job?", "How does the candidate connect the answer to their own experience?"]
     : ["What exactly is the interviewer asking?", "What did the candidate personally do? Listen for “I.”", "What was the result? Was there a number?"];
@@ -685,7 +689,7 @@ function renderPanel(s) {
     <p class="hint">Listen to the whole exchange once. Don't write while you listen. When it finishes, answer these questions in your own words.</p>
     ${playerHTML()}${dialogueHTML(s, false)}
     <ul class="prompts" style="margin-top:18px">${gistQs.map(q => `<li>${q}</li>`).join("")}</ul>
-    <div class="field"><label for="gist">Your answers</label><textarea id="gist" class="short">${esc(ST.gist)}</textarea></div>${nextRow(k)}`;
+    <div class="field"><label for="gist">Your answers (saved in this browser)</label><textarea id="gist" class="short">${esc(ST.gist)}</textarea></div>${nextRow(k)}`;
   if (k === 1) P.innerHTML = `<h3>Round 2: Transcribe</h3>
     <p class="hint">Play one sentence at a time and write exactly what you hear. Replay a sentence as many times as you need. If you can't hear a word, leave a space and keep going.</p>
     ${playerHTML({ lines: true })}${dialogueHTML(s, false)}${answerBox}${nextRow(k)}`;
@@ -760,7 +764,7 @@ function showResult(s) {
   box.innerHTML = `<div class="result">
     <p class="score">${pct}%<small>${R.matched} of ${R.graded} words correct${partial ? ", checked up to where you stopped" : ""}</small></p>
     <p class="legend"><mark>missed</mark> <mark class="small">missed small word</mark> <del>extra or misspelled</del>${partial ? ` <span class="rest">not transcribed yet</span>` : ""}</p>
-    <div class="diff">${R.out.join(" ")}${partial ? ` <span class="rest">${R.rest.join(" ")}</span>` : ""}</div>
+    <div class="diff" translate="no">${R.out.join(" ")}${partial ? ` <span class="rest">${R.rest.join(" ")}</span>` : ""}</div>
     ${smallList ? `<p class="smalls"><b>Small words you missed:</b> ${smallList}</p>` : `<p class="smalls">You didn't miss any small words. Well done.</p>`}
     ${acad.length ? `<p class="smalls"><b>Longer words to review:</b> ${acad.map(esc).join(", ")}</p>` : ""}
     <div class="sendbox">
